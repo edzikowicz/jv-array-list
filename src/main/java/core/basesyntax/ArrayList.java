@@ -115,7 +115,6 @@ public class ArrayList<T> implements List<T> {
     @Override
     public T remove(int index) {
         rangeCheck(index);
-        final Object[] elementData = this.elementData;
         final T oldValue = (T) elementData[index];
         System.arraycopy(elementData, index + 1, elementData, index, size - index - 1);
         size--;
@@ -130,7 +129,7 @@ public class ArrayList<T> implements List<T> {
                 return remove(i);
             }
         }
-        throw new NoSuchElementException("Element not found" + element);
+        throw new NoSuchElementException("Element not found: " + element);
     }
 
     @Override
