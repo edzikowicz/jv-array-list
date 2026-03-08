@@ -1,6 +1,5 @@
 package core.basesyntax;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public class ArrayList<T> implements List<T> {
@@ -29,11 +28,24 @@ public class ArrayList<T> implements List<T> {
         if (oldCapacity > 0) {
             int newCapacity = oldCapacity + oldCapacity / 2;
             if (newCapacity < minCapacity) {
-                return elementData = Arrays.copyOf(elementData, minCapacity);
+                newCapacity = minCapacity;
             }
-            return elementData = Arrays.copyOf(elementData, newCapacity);
+
+            Object[] newArray = new Object[newCapacity];
+            System.arraycopy(elementData, 0, newArray, 0, size);
+            elementData = newArray;
+            return elementData;
+
         } else {
-            return elementData = new Object[Math.max(DEFAULT_CAPACITY, minCapacity)];
+            int capacity;
+            if (DEFAULT_CAPACITY > minCapacity) {
+                capacity = DEFAULT_CAPACITY;
+            } else {
+                capacity = minCapacity;
+            }
+
+            elementData = new Object[capacity];
+            return elementData;
         }
     }
 
@@ -66,14 +78,12 @@ public class ArrayList<T> implements List<T> {
     @Override
     public void add(T value, int index) {
         rangeCheckForAdd(index);
-        final int s;
-        Object[] elementData;
-        if ((s = size) == (elementData = this.elementData).length) {
+        if (size == elementData.length) {
             elementData = grow();
         }
-        System.arraycopy(elementData, index, elementData, index + 1, s - index);
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
         elementData[index] = value;
-        size = s + 1;
+        size++;
     }
 
     @Override
@@ -117,11 +127,10 @@ public class ArrayList<T> implements List<T> {
     public T remove(T element) {
         for (int i = 0; i < size; i++) {
             if (element == null ? elementData[i] == null : element.equals(elementData[i])) {
-                remove(i);
-                return element;
+                return remove(i);
             }
         }
-        throw new NoSuchElementException();
+        throw new NoSuchElementException("Element not found" + element);
     }
 
     @Override
